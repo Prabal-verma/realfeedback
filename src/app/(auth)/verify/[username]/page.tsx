@@ -53,33 +53,40 @@ export default function VerifyAccount() {
   };
 
   return (
-    <div className="flex justify-center items-center min-h-screen bg-gray-100">
-      <div className="w-full max-w-md p-8 space-y-8 bg-white rounded-lg shadow-md">
-        <div className="text-center">
-          <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
-            Verify Your Account
-          </h1>
-          <p className="mb-4">Enter the verification code sent to your email</p>
-        </div>
-        <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-            <FormField
-              name="code"
-              control={form.control}
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Verification Code</FormLabel>
-                  <FormControl>
-                    <Input {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Verify</Button>
-          </form>
-        </Form>
-      </div>
+<div className="flex justify-center items-center min-h-screen bg-gray-900 text-white">
+  <div className="w-full max-w-md p-8 space-y-8 bg-gray-800 rounded-lg shadow-lg">
+    <div className="text-center">
+      <h1 className="text-4xl font-extrabold tracking-tight lg:text-5xl mb-6">
+        Verify Your Account
+      </h1>
+      <p className="text-gray-400 mb-4">Enter the verification code sent to your email</p>
     </div>
+    <Form {...form}>
+      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+        <FormField
+          name="code"
+          control={form.control}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-gray-300">Verification Code</FormLabel>
+              <Input
+                {...field}
+                className="bg-gray-700 border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-white"
+              />
+              <FormMessage />
+            </FormItem>
+          )}
+        />
+        <Button
+          type="submit"
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        >
+          Verify
+        </Button>
+      </form>
+    </Form>
+  </div>
+</div>
+
   );
 }
