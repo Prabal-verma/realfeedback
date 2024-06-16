@@ -141,12 +141,20 @@ function UserDashboard() {
         <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{' '}
         <div className="flex items-center">
           <input
+<<<<<<< HEAD
             id='profileUrl'
+=======
+            id="profileUrl"
+>>>>>>> 01ad4bb49005d5ff09e42f65d9d2434a7ff64200
             type="text"
             value={profileUrl}
             disabled
             className="input input-bordered w-full p-2 mr-2"
+<<<<<<< HEAD
             placeholder='Profile URL'
+=======
+            placeholder='Your unique profile URL'
+>>>>>>> 01ad4bb49005d5ff09e42f65d9d2434a7ff64200
           />
           <Button onClick={copyToClipboard}>Copy</Button>
         </div>
@@ -183,7 +191,11 @@ function UserDashboard() {
         {messages.length > 0 ? (
           messages.map((message, index) => (
             <MessageCard
+<<<<<<< HEAD
               key={message._id as string} 
+=======
+              key={message._id as string}
+>>>>>>> 01ad4bb49005d5ff09e42f65d9d2434a7ff64200
               message={message}
               onMessageDelete={handleDeleteMessage}
             />
