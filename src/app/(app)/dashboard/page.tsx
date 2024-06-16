@@ -141,10 +141,12 @@ function UserDashboard() {
         <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{' '}
         <div className="flex items-center">
           <input
+            id='profileUrl'
             type="text"
             value={profileUrl}
             disabled
             className="input input-bordered w-full p-2 mr-2"
+            placeholder='Profile URL'
           />
           <Button onClick={copyToClipboard}>Copy</Button>
         </div>
@@ -181,7 +183,7 @@ function UserDashboard() {
         {messages.length > 0 ? (
           messages.map((message, index) => (
             <MessageCard
-              key={message._id}
+              key={message._id as string} 
               message={message}
               onMessageDelete={handleDeleteMessage}
             />
