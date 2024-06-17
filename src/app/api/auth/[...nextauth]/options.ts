@@ -3,6 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/model/User';
+import mongoose from 'mongoose';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -10,35 +11,54 @@ export const authOptions: NextAuthOptions = {
       id: 'credentials',
       name: 'Credentials',
       credentials: {
-        email: { label: 'Email', type: 'text' },
+        identifier: { label: 'Identifier', type: 'text' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials: any): Promise<any> {
         await dbConnect();
+        console.log('Database connected');
+
+        if (!credentials || !credentials.identifier || !credentials.password) {
+          console.log('Missing credentials');
+          throw new Error('Missing credentials');
+        }
+
+        console.log('Received credentials:', credentials);
+
         try {
-          const user = await UserModel.findOne({
+          const query = {
             $or: [
-              { email: credentials.identifier },
               { username: credentials.identifier },
+              { email: credentials.identifier },
             ],
-          });
+          };
+          console.log('Executing query:', query);
+
+          const user = await UserModel.findOne(query).lean();
+          console.log('User found:', user);
+
           if (!user) {
-            throw new Error('No user found with this email');
+            console.log('No user found with this identifier');
+            throw new Error('No user found with this identifier');
           }
+
           if (!user.isVerified) {
+            console.log('Please verify your account before logging in');
             throw new Error('Please verify your account before logging in');
           }
-          const isPasswordCorrect = await bcrypt.compare(
-            credentials.password,
-            user.password
-          );
+
+          const isPasswordCorrect = await bcrypt.compare(credentials.password, user.password);
+
           if (isPasswordCorrect) {
+            console.log('User found & password correct');
             return user;
           } else {
+            console.log('Incorrect password');
             throw new Error('Incorrect password');
           }
         } catch (err: any) {
-          throw new Error(err);
+          console.error('Error during authentication:', err);
+          throw new Error(err.message || 'Internal server error');
         }
       },
     }),

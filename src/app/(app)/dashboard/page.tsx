@@ -1,33 +1,25 @@
-'use client';
-
-import { MessageCard } from '@/components/MessageCard';
+"use client";
+import React, { useCallback, useEffect, useState } from 'react';
 import { Button } from '@/components/ui/button';
-import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { useToast } from '@/components/ui/use-toast';
+import { Loader2, RefreshCcw } from 'lucide-react';
+import axios, { AxiosError } from 'axios';
+import { useSession } from 'next-auth/react';
 import { Message } from '@/model/User';
 import { ApiResponse } from '@/types/ApiResponse';
-import { zodResolver } from '@hookform/resolvers/zod';
-import axios, { AxiosError } from 'axios';
-import { Loader2, RefreshCcw } from 'lucide-react';
-import { User } from 'next-auth';
-import { useSession } from 'next-auth/react';
-import React, { useCallback, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
 import { AcceptMessageSchema } from '@/schemas/acceptMessageSchema';
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { MessageCard } from '@/components/MessageCard';
+import { Separator } from '@/components/ui/separator';
 
 function UserDashboard() {
+  const { toast } = useToast();
+  const { data: session } = useSession();
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSwitchLoading, setIsSwitchLoading] = useState(false);
-
-  const { toast } = useToast();
-
-  const handleDeleteMessage = (messageId: string) => {
-    setMessages(messages.filter((message) => message._id !== messageId));
-  };
-
-  const { data: session } = useSession();
 
   const form = useForm({
     resolver: zodResolver(AcceptMessageSchema),
@@ -55,45 +47,32 @@ function UserDashboard() {
     }
   }, [setValue, toast]);
 
-  const fetchMessages = useCallback(
-    async (refresh: boolean = false) => {
-      setIsLoading(true);
-      setIsSwitchLoading(false);
-      try {
-        const response = await axios.get<ApiResponse>('/api/get-messages');
-        setMessages(response.data.messages || []);
-        if (refresh) {
-          toast({
-            title: 'Refreshed Messages',
-            description: 'Showing latest messages',
-          });
-        }
-      } catch (error) {
-        const axiosError = error as AxiosError<ApiResponse>;
+  const fetchMessages = useCallback(async (refresh: boolean = false) => {
+    setIsLoading(true);
+    setIsSwitchLoading(false);
+    try {
+      const response = await axios.get<ApiResponse>('/api/get-messages');
+      setMessages(response.data.messages || []);
+      if (refresh) {
         toast({
-          title: 'Error',
-          description:
-            axiosError.response?.data.message ?? 'Failed to fetch messages',
-          variant: 'destructive',
+          title: 'Refreshed Messages',
+          description: 'Showing latest messages',
         });
-      } finally {
-        setIsLoading(false);
-        setIsSwitchLoading(false);
       }
-    },
-    [setIsLoading, setMessages, toast]
-  );
+    } catch (error) {
+      const axiosError = error as AxiosError<ApiResponse>;
+      toast({
+        title: 'Error',
+        description:
+          axiosError.response?.data.message ?? 'Failed to fetch messages',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+      setIsSwitchLoading(false);
+    }
+  }, [setIsLoading, setMessages, toast]);
 
-  // Fetch initial state from the server
-  useEffect(() => {
-    if (!session || !session.user) return;
-
-    fetchMessages();
-
-    fetchAcceptMessages();
-  }, [session, setValue, toast, fetchAcceptMessages, fetchMessages]);
-
-  // Handle switch change
   const handleSwitchChange = async () => {
     try {
       const response = await axios.post<ApiResponse>('/api/accept-messages', {
@@ -116,11 +95,22 @@ function UserDashboard() {
     }
   };
 
+  const handleDeleteMessage = (messageId: string) => {
+    setMessages(messages.filter((message) => message._id !== messageId));
+  };
+
+  useEffect(() => {
+    if (!session || !session.user) return;
+
+    fetchMessages();
+    fetchAcceptMessages();
+  }, [session, setValue, toast, fetchAcceptMessages, fetchMessages]);
+
   if (!session || !session.user) {
-    return <div></div>;
+    return <div></div>; // Placeholder or redirect logic for non-authenticated users
   }
 
-  const { username } = session.user as User;
+  const { username } = session.user;
 
   const baseUrl = `${window.location.protocol}//${window.location.host}`;
   const profileUrl = `${baseUrl}/u/${username}`;
@@ -138,7 +128,7 @@ function UserDashboard() {
       <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
 
       <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>{' '}
+        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
         <div className="flex items-center">
           <input
             id='profileUrl'
@@ -181,7 +171,7 @@ function UserDashboard() {
       </Button>
       <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
         {messages.length > 0 ? (
-          messages.map((message, index) => (
+          messages.map((message) => (
             <MessageCard
               key={message._id as string}
               message={message}

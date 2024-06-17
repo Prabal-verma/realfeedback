@@ -21,13 +21,22 @@ export async function GET(request: Request) {
   try {
     const user = await UserModel.aggregate([
       { $match: { _id: userId } },
-      { $unwind: '$messages' },
-      { $sort: { 'messages.createdAt': -1 } },
-      { $group: { _id: '$_id', messages: { $push: '$messages' } } },
-    ]).exec();
+      { $unwind: { path: '$messages', preserveNullAndEmptyArrays: true } }, // Unwind messages array
+      { $sort: { 'messages.createdAt': -1 } }, // Sort messages by createdAt descending
+      { $group: {
+          _id: '$_id',
+          messages: { $push: '$messages' }, // Push sorted messages into an array
+          username: { $first: '$username' }, // Assuming you want to include username in the result
+          email: { $first: '$email' }, // Assuming you want to include email in the result
+          // Add other fields you want to include in the result
+        }
+      },
+    ]);
+    console.log("User");
     console.log(user);
 
     if (!user || user.length === 0) {
+      console.log('User not found');
       return Response.json(
         { message: 'User not found', success: false },
         { status: 404 }

@@ -48,6 +48,7 @@ export default function SignInForm() {
     password: data.password,
     });
     if (result?.error) {
+      console.log("hello")
       toast({
         title: "Sign in failed",
         description: result.error,
@@ -118,7 +119,7 @@ export default function SignInForm() {
     <div className="text-center mt-4">
       <p className="text-gray-400">
         Already a member?{" "}
-        <Link href="/sign-in" className="text-blue-400 hover:text-blue-300">
+        <Link href="/sign-up" className="text-blue-400 hover:text-blue-300">
           Sign up
         </Link>
       </p>
