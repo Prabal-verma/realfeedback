@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import dbConnect from '@/lib/dbConnect';
 import UserModel from '@/model/User';
 import mongoose from 'mongoose';
+import { redirect } from 'next/dist/server/api-utils';
 
 export const authOptions: NextAuthOptions = {
   providers: [
