@@ -70,8 +70,6 @@ export default function SignInForm() {
         Join the Feedback
       </h1>
       <p className="text-gray-400 mb-4">Sign In to get started</p>
-      <p className="text-gray-400 mb-4">For testisng </p>
-      <p className="text-gray-400 mb-4">mail test@test.com, password test1234</p>
     </div>
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
