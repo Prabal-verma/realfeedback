@@ -124,67 +124,80 @@ function UserDashboard() {
   };
 
   return (
-    <>
-      <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded w-full max-w-6xl">
-      <h1 className="text-4xl font-bold mb-4">User Dashboard</h1>
+<>
+  <div className="my-8 mx-4 md:mx-8 lg:mx-auto p-6 bg-white rounded-lg shadow-lg w-full max-w-6xl">
+    <h1 className="text-4xl font-bold mb-6 text-center">User Dashboard</h1>
 
-      <div className="mb-4">
-        <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
-        <div className="flex items-center">
-          <input
-            id='profileUrl'
-            type="text"
-            value={profileUrl}
-            disabled
-            className="input input-bordered w-full p-2 mr-2"
-            placeholder='Profile URL'
-          />
-          <Button onClick={copyToClipboard}>Copy</Button>
-        </div>
-      </div>
-
-      <div className="mb-4">
-        <Switch
-          {...register('acceptMessages')}
-          checked={acceptMessages}
-          onCheckedChange={handleSwitchChange}
-          disabled={isSwitchLoading}
+    {/* Copy Link Section */}
+    <div className="mb-6">
+      <h2 className="text-lg font-semibold mb-2">Copy Your Unique Link</h2>
+      <div className="flex items-center border-b-2 border-gray-300 pb-2">
+        <input
+          id='profileUrl'
+          type="text"
+          value={profileUrl}
+          disabled
+          className="input input-bordered w-full p-2 mr-2 focus:outline-none"
+          placeholder='Profile URL'
         />
-        <span className="ml-2">
-          Accept Messages: {acceptMessages ? 'On' : 'Off'}
-        </span>
+        <Button onClick={copyToClipboard} className="bg-blue-600 text-white hover:bg-blue-700">
+          Copy
+        </Button>
       </div>
-      <Separator />
+    </div>
 
-      <Button
-        className="mt-4"
-        variant="outline"
-        onClick={(e) => {
-          e.preventDefault();
-          fetchMessages(true);
-        }}
-      >
-        {isLoading ? (
-          <Loader2 className="h-4 w-4 animate-spin" />
-        ) : (
-          <RefreshCcw className="h-4 w-4" />
-        )}
-      </Button>
-      <div className="mt-4 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {messages.length > 0 ? (
-          messages.map((message) => (
-            <MessageCard
-              key={message._id as string}
-              message={message}
-              onMessageDelete={handleDeleteMessage}
-            />
-          ))
-        ) : (
-          <p>No messages to display.</p>
-        )}
-      </div>
-      </div>
-    </>
+    {/* Accept Messages Switch */}
+    <div className="mb-6 flex items-center">
+      <Switch
+        {...register('acceptMessages')}
+        checked={acceptMessages}
+        onCheckedChange={handleSwitchChange}
+        disabled={isSwitchLoading}
+        className="mr-2"
+      />
+      <span className="text-lg">
+        Accept Messages: <span className={`font-semibold ${acceptMessages ? 'text-green-600' : 'text-red-600'}`}>{acceptMessages ? 'On' : 'Off'}</span>
+      </span>
+    </div>
+
+    <Separator className="my-6" />
+
+    {/* Refresh Button */}
+    <Button
+      className="mt-4"
+      variant="outline"
+      onClick={(e) => {
+        e.preventDefault();
+        fetchMessages(true);
+      }}
+    >
+      {isLoading ? (
+        <Loader2 className="h-4 w-4 animate-spin" />
+      ) : (
+        <RefreshCcw className="h-4 w-4 mr-2" />
+      )}
+      Refresh Messages
+    </Button>
+
+    {/* Messages Grid */}
+    <div className="mt-8 grid gap-6 md:grid-cols-2">
+      {messages.length > 0 ? (
+        messages.map((message) => (
+          <MessageCard
+            key={message._id as string}
+            message={message}
+            onMessageDelete={handleDeleteMessage}
+          />
+        ))
+      ) : (
+        <div className="col-span-2 flex items-center justify-center">
+          <p className="text-gray-500">No messages to display.</p>
+        </div>
+      )}
+    </div>
+  </div>
+</>
+
 
   );
 }
