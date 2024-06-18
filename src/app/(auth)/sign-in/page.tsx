@@ -87,9 +87,6 @@ export default function SignInForm() {
                 name="identifier"
                 className="bg-gray-700 border-gray-600 focus:ring-blue-500 focus:border-blue-500 text-white"
               />
-              <p className="text-gray-400 text-sm">
-                We will send you a verification code
-              </p>
               <FormMessage />
             </FormItem>
           )}
