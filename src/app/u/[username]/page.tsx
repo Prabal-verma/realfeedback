@@ -95,6 +95,13 @@ export default function SendMessage() {
     }
   };
 
+  const handleKeyPress = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      form.handleSubmit(onSubmit)();
+    }
+  };
+
   return (
     <div className="container mx-auto my-8 p-6 bg-white rounded max-w-4xl">
       <h1 className="text-4xl font-bold mb-6 text-center">
@@ -113,6 +120,7 @@ export default function SendMessage() {
                     placeholder="Write your anonymous message here"
                     className="resize-none"
                     {...field}
+                    onKeyDown={handleKeyPress}
                   />
                 </FormControl>
                 <FormMessage />
