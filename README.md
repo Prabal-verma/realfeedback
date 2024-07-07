@@ -2,6 +2,14 @@
 
 TrueFeedback is a Next.js application built with TypeScript that allows users to send and receive anonymous messages. It also leverages the OpenAI ChatGPT API to generate random questions or prompts to encourage interaction. The application features two main interfaces: one for viewing received messages and another for sending anonymous messages. Authentication is implemented using NextAuth.
 
+## UI DEMO
+### HOME PAGE
+![image](./demo.png "Title")
+### DASHBOARD PAGE
+![image](./demo-1.png "Title")
+### PUBLIC PAGE
+![image](./demo-2.png "Title")
+
 ## Table of Contents
 
 - [Features](#features)
